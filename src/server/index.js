@@ -1,74 +1,73 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
+const connectDB = require("./config/db");
+const Product = require("./models/Product");
+
 const app = express();
 const PORT = 5000;
+
+// Connect MongoDB
+connectDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Mock product data
-let products = [
-    {
-        id: 1,
-        name: "Smart Watch",
-        price: 120,
-        description: "Modern smart watch with health tracking",
-    },
-    {
-        id: 2,
-        name: "Wireless Headphones",
-        price: 90,
-        description: "Noise cancelling wireless headphones",
-    },
-];
-
-// Routes
-
 // Health check
 app.get("/", (req, res) => {
-    res.send("🚀 Product API is running");
+    res.send("Product API with MongoDB is running");
 });
 
 // Get all products
-app.get("/products", (req, res) => {
-    res.json(products);
+app.get("/products", async (req, res) => {
+    try {
+        const products = await Product.find().sort({ createdAt: -1 });
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch products" });
+    }
 });
 
-// Get product by ID
-app.get("/products/:id", (req, res) => {
-    const product = products.find(
-        (item) => item.id === Number(req.params.id)
-    );
+// Get single product
+app.get("/products/:id", async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
 
-    if (!product) {
-        return res.status(404).json({ message: "Product not found" });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.json(product);
+    } catch (error) {
+        res.status(400).json({ message: "Invalid product ID" });
     }
-
-    res.json(product);
 });
 
 // Add new product
-app.post("/products", (req, res) => {
-    const { name, price, description } = req.body;
+app.post("/products", async (req, res) => {
+    const { name, price, description, image } = req.body;
 
     if (!name || !price || !description) {
-        return res.status(400).json({ message: "All fields are required" });
+        return res.status(400).json({ message: "All fields required" });
     }
 
-    const newProduct = {
-        id: Date.now(),
-        name,
-        price,
-        description,
-    };
+    try {
+        const product = await Product.create({
+            name,
+            price,
+            description,
+            image,
+        });
 
-    products.push(newProduct);
-    res.status(201).json(newProduct);
+        res.status(201).json(product);
+    } catch (error) {
+        res.status(500).json({ message: "Product creation failed" });
+    }
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`✅ Server running at http://localhost:${PORT}`);
+    console.log(`Server running at http://localhost:${PORT}`);
 });

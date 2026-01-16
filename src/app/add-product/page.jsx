@@ -4,19 +4,33 @@ import toast from "react-hot-toast";
 
 export default function AddProductPage() {
   const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    description: "",
+    image: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/products", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "New Product",
-          price: 99,
-          description: "Modern product",
+          name: formData.name,
+          price: Number(formData.price),
+          description: formData.description,
+          image: formData.image,
         }),
       });
 
@@ -25,6 +39,7 @@ export default function AddProductPage() {
       }
 
       toast.success("Product added successfully!");
+      setFormData({ name: "", price: "", description: "", image: "" });
     } catch (error) {
       toast.error("Something went wrong!");
     } finally {
@@ -40,11 +55,50 @@ export default function AddProductPage() {
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg space-y-4"
       >
+        <input
+          type="text"
+          name="name"
+          placeholder="Product name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+
+        <input
+          type="number"
+          name="price"
+          placeholder="Price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+          rows="4"
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+
+        <input
+          type="text"
+          name="image"
+          placeholder="Image URL (optional)"
+          value={formData.image}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+
         <button
           type="submit"
           disabled={loading}
           className="w-full bg-emerald-500 text-white py-3 rounded-xl transition
-                     hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                     hover:scale-105 disabled:opacity-60"
         >
           {loading ? "Saving..." : "Save Product"}
         </button>
