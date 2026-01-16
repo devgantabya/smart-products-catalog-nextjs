@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -21,19 +21,18 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // NextAuth credentials login
-      const res = await signIn("credentials", {
-        redirect: false,
-        email: formData.email,
-        password: formData.password,
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      if (res.error) {
-        throw new Error("Invalid credentials");
-      }
+      const data = await res.json();
 
-      toast.success("Logged in successfully!");
-      router.push("/add-product");
+      if (!res.ok) throw new Error(data.message || "Signup failed");
+
+      toast.success("Signup successful! Please login.");
+      router.push("/login");
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -44,13 +43,23 @@ export default function LoginPage() {
   return (
     <section className="max-w-md mx-auto py-20">
       <h1 className="text-3xl font-semibold mb-8 text-center text-emerald-500">
-        Login
+        Sign Up
       </h1>
 
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg space-y-4"
       >
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+
         <input
           type="email"
           name="email"
@@ -76,21 +85,16 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full bg-emerald-500 text-white py-3 rounded-xl hover:scale-105 transition-transform disabled:opacity-60"
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Signing up..." : "Sign Up"}
         </button>
 
         <p className="text-sm text-center opacity-70">
-          Don't have an account?{" "}
-          <a href="/signup" className="text-emerald-500 hover:underline">
-            Sign Up
+          Already have an account?{" "}
+          <a href="/login" className="text-emerald-500 hover:underline">
+            Login
           </a>
         </p>
       </form>
-      {/* mock login info */}
-      <p className="mt-2 text-center text-sm opacity-50">
-        Use <strong>admin@example.com</strong> / <strong>123456</strong> for
-        mock login
-      </p>
     </section>
   );
 }

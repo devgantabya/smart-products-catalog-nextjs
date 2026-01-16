@@ -35,10 +35,7 @@ export default function Navbar() {
 
           {session ? (
             <>
-              <Link
-                href="/add-product"
-                className="text-gray-700 dark:text-gray-200 hover:text-emerald-500 transition-colors font-medium"
-              >
+              <Link href="/add-product" className={linkClass("/add-product")}>
                 Add Product
               </Link>
               <button

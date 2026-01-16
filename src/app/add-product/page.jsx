@@ -64,8 +64,10 @@ function AddProductForm() {
   };
 
   return (
-    <section className="max-w-xl mx-auto py-20">
-      <h1 className="text-3xl font-semibold mb-8">Add Product</h1>
+    <section className="max-w-xl mx-auto pt-10 pb-20">
+      <h1 className="text-3xl font-semibold mb-4 text-center text-emerald-500">
+        Add Product
+      </h1>
 
       <form
         onSubmit={handleSubmit}
