@@ -1,8 +1,10 @@
 "use client";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+  const { data: session } = useSession();
   const path = usePathname();
 
   const linkClass = (href) =>
@@ -20,12 +22,14 @@ export default function Navbar() {
           <Link href="/products" className={linkClass("/products")}>
             Products
           </Link>
-          <Link href="/add-product" className={linkClass("/add-product")}>
-            Add Product
-          </Link>
-          <Link href="/login" className={linkClass("/login")}>
-            Login
-          </Link>
+          {session ? (
+            <>
+              <Link href="/add-product">Add Product</Link>
+              <button onClick={() => signOut()}>Logout</button>
+            </>
+          ) : (
+            <Link href="/login">Login</Link>
+          )}
         </div>
       </nav>
     </header>

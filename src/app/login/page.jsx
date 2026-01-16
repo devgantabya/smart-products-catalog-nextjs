@@ -1,34 +1,74 @@
 "use client";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const res = await fetch("/api/auth", {
-      method: "POST",
-      body: JSON.stringify({
-        email: "admin@example.com",
-        password: "123456",
-      }),
+    // 🔹 Attempt NextAuth login (mock credentials provider)
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
     });
 
-    if (res.ok) router.push("/products");
+    setLoading(false);
+
+    if (res.error) {
+      toast.error("Invalid credentials!");
+    } else {
+      toast.success("Logged in successfully!");
+      router.push("/add-product");
+    }
   };
 
   return (
-    <section className="flex justify-center items-center py-20">
+    <section className="max-w-md mx-auto py-20">
+      <h1 className="text-3xl font-semibold mb-8">Login</h1>
+
       <form
-        onSubmit={handleLogin}
-        className="bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-xl w-full max-w-md"
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg space-y-4"
       >
-        <h1 className="text-2xl font-semibold mb-6">Login</h1>
-        <button className="w-full bg-emerald-500 text-white py-3 rounded-xl hover:bg-emerald-600 transition">
-          Login
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-emerald-500 text-white py-3 rounded-xl transition
+                     hover:scale-105 disabled:opacity-60"
+        >
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+
+      <p className="mt-4 text-center opacity-70">
+        Use <strong>admin@example.com</strong> / <strong>123456</strong> for
+        mock login
+      </p>
     </section>
   );
 }

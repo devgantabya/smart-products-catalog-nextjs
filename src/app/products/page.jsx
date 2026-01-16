@@ -4,7 +4,7 @@ export default async function ProductsPage() {
   let products = [];
 
   try {
-    const res = await fetch("http://localhost:5000/products", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
       cache: "no-store",
     });
 
@@ -33,7 +33,7 @@ export default async function ProductsPage() {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product._id} product={product} />
           ))}
         </div>
       )}

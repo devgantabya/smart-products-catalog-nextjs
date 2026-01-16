@@ -1,8 +1,26 @@
 "use client";
-import { useState } from "react";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function AddProductPage() {
+export default function AddProductPageWrapper() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/login");
+  }, [status, router]);
+
+  if (status === "loading")
+    return <p className="text-center py-20">Loading...</p>;
+  if (!session) return null;
+
+  return <AddProductForm />;
+}
+
+function AddProductForm() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -34,9 +52,7 @@ export default function AddProductPage() {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to add product");
-      }
+      if (!res.ok) throw new Error("Failed to add product");
 
       toast.success("Product added successfully!");
       setFormData({ name: "", price: "", description: "", image: "" });
