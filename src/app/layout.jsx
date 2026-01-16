@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Smart Product Catalog",
@@ -9,13 +10,25 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-inter">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body className="bg-gray-50 text-gray-800 antialiased dark:bg-gray-900 dark:text-gray-100 font-inter">
         <Navbar />
-        <main className="min-h-screen max-w-7xl mx-auto px-4 pt-24">
+
+        <main role="main" className="min-h-screen max-w-7xl mx-auto px-4 pt-24">
           {children}
         </main>
+
         <Footer />
+
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: "#1f2937",
+              color: "#fff",
+            },
+          }}
+        />
       </body>
     </html>
   );
