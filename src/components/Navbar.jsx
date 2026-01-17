@@ -17,14 +17,14 @@ export default function Navbar() {
      }`;
 
   return (
-    <header className="fixed top-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-md z-50 transition-colors duration-300">
+    <header className="fixed top-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow z-50 transition-colors duration-300">
       <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl md:text-3xl font-extrabold text-emerald-500 tracking-tight hover:scale-105 transition-transform"
+          className="text-2xl md:text-4xl font-extrabold text-emerald-500 tracking-tight transition-transform italic"
         >
-          SmartCatalog
+          Sellvix
         </Link>
 
         {/* Desktop Menu */}

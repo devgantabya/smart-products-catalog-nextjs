@@ -5,15 +5,17 @@ import { Toaster } from "react-hot-toast";
 import Providers from "@/components/Providers";
 
 export const metadata = {
-  title: "Smart Product Catalog",
-  description: "Browse modern products with a clean and fast experience",
+  title: "Sellvix",
+  description: "Modern eCommerce platform powered by Sellvix",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className="bg-gray-50 text-gray-800 antialiased dark:bg-gray-900 dark:text-gray-100 font-inter">
-        {/* Only client components inside Providers */}
         <Providers>
           <Navbar />
 
