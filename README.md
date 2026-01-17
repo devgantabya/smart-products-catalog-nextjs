@@ -31,6 +31,7 @@ Password: 123456
 | Route         | Description     | Access    |
 | ------------- | --------------- | --------- |
 | /             | Landing page    | Public    |
+| /signup       | Signup page     | Public    |
 | /login        | Login page      | Public    |
 | /products     | Product list    | Public    |
 | /products/:id | Product details | Public    |
@@ -43,9 +44,11 @@ Password: 123456
 - Next.js 16 (App Router)
 - JavaScript (No TypeScript)
 - Express.js
+- Cors
 - Tailwind CSS
-- Cookies (Auth)
+- NextAuth.js (Auth)
 - React Hot Toast
+- React icons
 
 ---
 

@@ -19,15 +19,13 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow z-50 transition-colors duration-300">
       <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-        {/* Logo */}
         <Link
           href="/"
-          className="text-2xl md:text-4xl font-extrabold text-emerald-500 tracking-tight transition-transform italic"
+          className="flex items-center gap-2 text-2xl md:text-3xl font-extrabold text-emerald-500 tracking-tight hover:opacity-90 transition"
         >
-          Sellvix
+          <span className="italic">Sellvix</span>
         </Link>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6 md:gap-8">
           <Link href="/products" className={linkClass("/products")}>
             Products
@@ -48,7 +46,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-transform duration-200 shadow-sm"
+              className="bg-emerald-500 text-white px-6 py-2 rounded-xl font-medium hover:scale-105 transition"
             >
               Login
             </Link>

@@ -5,16 +5,13 @@ export default function Footer() {
   return (
     <footer className="bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 py-10">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-        {/* Copy */}
         <p className="text-sm md:text-base opacity-80">
-          © {new Date().getFullYear()} Smart Product Catalog. All rights
-          reserved.
+          © {new Date().getFullYear()} Sellvix. All rights reserved.
         </p>
 
-        {/* Social Icons */}
         <div className="flex gap-4 text-xl">
           <a
-            href="https://github.com"
+            href="https://github.com/devgantabya"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-emerald-500 transition-colors"
@@ -22,7 +19,7 @@ export default function Footer() {
             <FaGithub />
           </a>
           <a
-            href="https://twitter.com"
+            href="https://x.com/dev_gantabya"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-emerald-500 transition-colors"
@@ -30,7 +27,7 @@ export default function Footer() {
             <FaTwitter />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/devgantabya/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-emerald-500 transition-colors"
