@@ -26,12 +26,30 @@ app.get("/", (req, res) => {
 // Get all products
 app.get("/products", async (req, res) => {
     try {
-        const products = await Product.find().sort({ createdAt: -1 });
+        const { category, search } = req.query;
+
+        const filter = {};
+
+        if (category) {
+            // Case-insensitive match
+            filter.category = { $regex: `^${category}$`, $options: "i" };
+        }
+
+        if (search) {
+            filter.name = { $regex: search, $options: "i" };
+        }
+
+        const products = await Product.find(filter).sort({ createdAt: -1 });
+
         res.json(products);
     } catch (error) {
         res.status(500).json({ message: "Failed to fetch products" });
     }
 });
+
+
+
+
 
 // Get single product
 app.get("/products/:id", async (req, res) => {

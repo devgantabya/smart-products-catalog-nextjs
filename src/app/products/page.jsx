@@ -1,16 +1,24 @@
-import ProductCard from "@/components/ProductCard";
+import ProductsHeader from "@/components/products/ProductsHeader";
+import ProductsGrid from "@/components/products/ProductsGrid";
 
-export default async function ProductsPage() {
+export default async function ProductsPage({ searchParams }) {
+  const category = searchParams?.category;
+  const search = searchParams?.search;
+
+  const query = new URLSearchParams();
+
+  if (category) query.append("category", category);
+  if (search) query.append("search", search);
+
   let products = [];
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products?${query.toString()}`,
+      { cache: "no-store" },
+    );
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch products");
-    }
+    if (!res.ok) throw new Error("Failed to fetch products");
 
     products = await res.json();
   } catch (error) {
@@ -18,25 +26,9 @@ export default async function ProductsPage() {
   }
 
   return (
-    <section>
-      <header className="mb-10">
-        <h1 className="text-3xl font-semibold">Products</h1>
-        <p className="mt-2 opacity-70">
-          Browse our curated collection of modern products.
-        </p>
-      </header>
-
-      {products.length === 0 ? (
-        <p className="text-center opacity-70 py-20">
-          No products available at the moment.
-        </p>
-      ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
-      )}
+    <section className="space-y-12 py-8 md:py-12">
+      <ProductsHeader category={category} />
+      <ProductsGrid products={products} />
     </section>
   );
 }
