@@ -1,9 +1,11 @@
 "use client";
+
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import RedirectIfAuthenticated from "@/components/RedirectIfAuthenticated";
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,7 +30,6 @@ export default function SignupPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Signup failed");
 
       toast.success("Signup successful! Please login.");
@@ -96,5 +97,13 @@ export default function SignupPage() {
         </p>
       </form>
     </section>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <RedirectIfAuthenticated>
+      <SignupForm />
+    </RedirectIfAuthenticated>
   );
 }

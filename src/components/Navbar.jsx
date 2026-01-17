@@ -1,4 +1,5 @@
 "use client";
+
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -6,19 +7,21 @@ import { useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const path = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Prevent rendering while session is loading
+  if (status === "loading") return null;
+
   const linkClass = (href) =>
     `relative text-gray-700 dark:text-gray-200 font-medium transition-colors
-     hover:text-emerald-500 ${
-       path === href ? "text-emerald-500 font-semibold" : ""
-     }`;
+     hover:text-emerald-500 ${path === href ? "text-emerald-500 font-semibold" : ""}`;
 
   return (
     <header className="fixed top-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow z-50 transition-colors duration-300">
       <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+        {/* Logo */}
         <Link
           href="/"
           className="flex items-center gap-2 text-2xl md:text-3xl font-extrabold text-emerald-500 tracking-tight hover:opacity-90 transition"
@@ -53,7 +56,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Hamburger */}
         <button
           className="md:hidden text-gray-700 dark:text-gray-200 text-2xl"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -62,7 +64,6 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-white dark:bg-gray-900/95 shadow-md backdrop-blur-sm px-6 py-4 flex flex-col gap-4 animate-slide-down">
           <Link

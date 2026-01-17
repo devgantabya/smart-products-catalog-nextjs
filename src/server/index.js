@@ -68,10 +68,10 @@ app.get("/products/:id", async (req, res) => {
 
 // Add new product
 app.post("/products", async (req, res) => {
-    const { name, price, description, image } = req.body;
+    const { name, price, description, image, category } = req.body;
 
-    if (!name || !price || !description) {
-        return res.status(400).json({ message: "All fields required" });
+    if (!name || !price || !description || !category) {
+        return res.status(400).json({ message: "All required fields must be filled" });
     }
 
     try {
@@ -79,11 +79,13 @@ app.post("/products", async (req, res) => {
             name,
             price,
             description,
-            image,
+            category,
+            image: image || "",
         });
 
         res.status(201).json(product);
     } catch (error) {
+        console.error("Product creation error:", error);
         res.status(500).json({ message: "Product creation failed" });
     }
 });

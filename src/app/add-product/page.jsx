@@ -27,6 +27,7 @@ function AddProductForm() {
     price: "",
     description: "",
     image: "",
+    category: "",
   });
 
   const handleChange = (e) => {
@@ -41,6 +42,18 @@ function AddProductForm() {
     setLoading(true);
 
     try {
+      // Validate required fields
+      if (
+        !formData.name ||
+        !formData.price ||
+        !formData.description ||
+        !formData.category
+      ) {
+        toast.error("Please fill all required fields!");
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,16 +61,23 @@ function AddProductForm() {
           name: formData.name,
           price: Number(formData.price),
           description: formData.description,
-          image: formData.image,
+          category: formData.category,
+          image: formData.image || "",
         }),
       });
 
       if (!res.ok) throw new Error("Failed to add product");
 
       toast.success("Product added successfully!");
-      setFormData({ name: "", price: "", description: "", image: "" });
+      setFormData({
+        name: "",
+        price: "",
+        description: "",
+        image: "",
+        category: "",
+      });
     } catch (error) {
-      toast.error("Something went wrong!");
+      toast.error(error.message || "Something went wrong!");
     } finally {
       setLoading(false);
     }
@@ -76,7 +96,7 @@ function AddProductForm() {
         <input
           type="text"
           name="name"
-          placeholder="Product name"
+          placeholder="Product Name *"
           value={formData.name}
           onChange={handleChange}
           required
@@ -86,8 +106,18 @@ function AddProductForm() {
         <input
           type="number"
           name="price"
-          placeholder="Price"
+          placeholder="Price *"
           value={formData.price}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
+        />
+
+        <input
+          type="text"
+          name="category"
+          placeholder="Category *"
+          value={formData.category}
           onChange={handleChange}
           required
           className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"
@@ -95,7 +125,7 @@ function AddProductForm() {
 
         <textarea
           name="description"
-          placeholder="Description"
+          placeholder="Description *"
           value={formData.description}
           onChange={handleChange}
           required

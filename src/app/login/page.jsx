@@ -1,19 +1,27 @@
 "use client";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/products");
+    }
+  }, [status, router]);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -21,25 +29,26 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // NextAuth credentials login
       const res = await signIn("credentials", {
         redirect: false,
         email: formData.email,
         password: formData.password,
       });
 
-      if (res.error) {
-        throw new Error("Invalid credentials");
-      }
+      if (res.error) throw new Error("Invalid credentials");
 
       toast.success("Logged in successfully!");
-      router.push("/add-product");
+      router.push("/products");
     } catch (error) {
       toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  if (status === "loading" || status === "authenticated") {
+    return <p className="text-center py-20">Loading...</p>;
+  }
 
   return (
     <section className="max-w-md mx-auto py-20">
@@ -86,8 +95,9 @@ export default function LoginPage() {
           </a>
         </p>
       </form>
-      {/* mock login info */}
-      <p className="mt-2 text-center text-sm opacity-50">
+
+      {/* Mock login info */}
+      <p className="mt-4 text-center text-sm opacity-50">
         Use <strong>admin@example.com</strong> / <strong>123456</strong> for
         mock login
       </p>
